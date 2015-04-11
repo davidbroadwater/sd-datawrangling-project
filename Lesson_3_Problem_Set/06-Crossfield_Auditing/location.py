@@ -23,10 +23,28 @@ import pprint
 CITIES = 'cities.csv'
 
 
+def fix_name(name):
+
+    # YOUR CODE HERE
+    if (name == "NULL") or (name == ""):
+        name = []
+    elif name.startswith("{"):
+        name = parse_name_list(name)
+    else:
+        name = [name]
+    return name
+
 def check_loc(point, lat, longi):
     # YOUR CODE HERE
-    
-    pass
+    reader = csv.reader([point], delimiter=' ')
+    values = []
+    for item in reader:
+        for s in item:
+            values.append(s)
+    if values[0] == lat and values[1] == longi:
+        return True
+    else:
+        return False
 
 
 def process_file(filename):

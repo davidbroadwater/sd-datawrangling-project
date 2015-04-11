@@ -16,11 +16,46 @@ DATAFILE = "beatles-diskography.csv"
 def parse_file(datafile):
     data = []
     with open(datafile, "rb") as f:
-        for line in f:
-            print line
 
+        counter = 0
+        for line in f:
+            #print line
+            data_line = line.strip().split(",")
+            counter += 1
+            if data_line[0] == 'Title':
+                header = data_line
+                #print header
+                #data_dict = {}.fromkeys(fields)
+            elif  counter == 12: 
+                break
+            else:
+                data_dict = dict(zip(header, data_line))
+                #print data_dict
+                data.append(data_dict)
     return data
 
+''' 
+Official Answer:
+
+def parse_file(datafile):
+    data = []
+    with open(datafile, "rb") as f:
+        header = f.readline().split(",")
+        counter = 0
+        for line in f:
+            if counter == 10:
+                break
+                
+            fields = line.split(",")
+            entry = {}
+
+            for i, value in enumerate(fields)
+                entry[header[i].strip()] = value.strip()
+
+            data.append(entry)
+            counter += 1
+    return data
+'''
 
 def test():
     # a simple test of your implemetation

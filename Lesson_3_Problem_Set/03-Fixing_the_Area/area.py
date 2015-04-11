@@ -19,11 +19,46 @@ import pprint
 
 CITIES = 'cities.csv'
 
+def is_float(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+def most_significant_number(num_string):
+
+    reader = csv.reader([num_string], delimiter='|')
+    values = []
+    sig_figs = []
+    for item in reader:
+        for s in item:
+            values.append(s.strip('{}'))
+
+    for num_string in values:
+        if '.' in num_string:
+            # Has decimal point. Include in sig fig calculations
+            sig_figs.append(len(num_string.partition('e')[0]))
+        else:
+            # No decimal point. Count trailing zeros.
+            sig_figs.append(len(num_string.partition('e')[0].rstrip('0')))
+
+    max_sig_figs = max(sig_figs)
+    i = sig_figs.index(max_sig_figs)
+    return float(values[i])
+
 
 def fix_area(area):
 
     # YOUR CODE HERE
-
+    if (area == "NULL") or (area == ""):
+        area = None
+    elif area.startswith("{"):
+        area = most_significant_number(area)
+    elif is_float(area):
+        area = float(area)
+    else:
+        area = None
     return area
 
 

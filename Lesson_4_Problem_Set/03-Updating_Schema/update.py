@@ -9,14 +9,14 @@ The data is already in the database. But you have been given a task to also incl
 information in the data, so you have to go through the data and update the existing entries.
 
 The following things should be done in the function add_field:
-- process the csv file and extract 2 fields - 'rdf-schema#label' and 'binomialAuthority_label'
-- clean up the 'rdf-schema#label' same way as in the first exercise - removing redundant "(spider)" suffixes
-- return a dictionary, with 'label' being the key, and 'binomialAuthority_label' the value
-- if 'binomialAuthority_label' is "NULL", skip the item
+[x] process the csv file and extract 2 fields - 'rdf-schema#label' and 'binomialAuthority_label'
+[x] clean up the 'rdf-schema#label' same way as in the first exercise - removing redundant "(spider)" suffixes
+[x] return a dictionary, with 'label' being the key, and 'binomialAuthority_label' the value
+[x] if 'binomialAuthority_label' is "NULL", skip the item
 
 The following should be done in the function update_db:
-- query the database by using the field 'label'
-- update the data, by adding a new item under 'classification' with a key 'binomialAuthority'
+[x] query the database by using the field 'label'
+[x] update the data, by adding a new item under 'classification' with a key 'binomialAuthority'
 
 
 The resulting data should look like this:
@@ -56,13 +56,30 @@ def add_field(filename, fields):
         for i in range(3):
             l = reader.next()
         # YOUR CODE HERE
+        for line in reader:
+            line.update([('rdf-schema#label',line['rdf-schema#label'].partition('(')[0])])
 
+            if line['binomialAuthority_label'] == 'NULL':
+                continue
+            else:
+                for fieldname in process_fields:
+                    value  = line[fieldname]
+                    line.update([(fieldname,value.strip('{}').strip())])
+
+            data.update([(line['rdf-schema#label'], line['binomialAuthority_label'])])
+    pprint.pprint(data)
     return data
 
 
 def update_db(data, db):
     # YOUR CODE HERE
-    pass
+    for key, value in data.iteritems():
+            db.arachnid.update({"label": key},
+                                {"$set":{
+                                        "classification" : {"binomialAuthority": value}
+                                    }
+                                },
+                                multi = True)
 
 
 def test():

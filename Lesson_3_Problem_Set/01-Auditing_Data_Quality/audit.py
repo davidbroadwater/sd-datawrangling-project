@@ -18,6 +18,8 @@ import codecs
 import csv
 import json
 import pprint
+from collections import defaultdict
+from types import NoneType
 
 CITIES = 'cities.csv'
 
@@ -25,13 +27,53 @@ FIELDS = ["name", "timeZone_label", "utcOffset", "homepage", "governmentType_lab
           "elevation", "maximumElevation", "minimumElevation", "populationDensity", "wgs84_pos#lat", "wgs84_pos#long", 
           "areaLand", "areaMetro", "areaUrban"]
 
+
+def is_int(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
+def is_float(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
 def audit_file(filename, fields):
     fieldtypes = {}
 
     # YOUR CODE HERE
+    fieldtypes = defaultdict(set)
+    with open(filename, 'r') as f:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            if row['URI'].startswith("http://dbpedia.org") == False:
+                continue
+            else:
+                for fieldname in fields:
+                    value = row[fieldname]
+
+                    if (value == "NULL") or (value == ""):
+                        fieldtypes[fieldname].add(NoneType)
+                    elif value.startswith("{"):
+                        fieldtypes[fieldname].add(list)
+                    elif is_int(value):
+                        fieldtypes[fieldname].add(int)
+                    elif is_float(value):
+                        fieldtypes[fieldname].add(float)
+                    else:
+                        fieldtypes[fieldname].add(str)
+
+        # for item in fieldtypes
+        #     value_list = list(fieldtypes[item])
+        #     fieldtypes[item] = value_list
 
 
-    return fieldtypes
+    return dict(fieldtypes.items())
 
 
 def test():

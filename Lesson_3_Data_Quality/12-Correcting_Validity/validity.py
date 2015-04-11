@@ -23,22 +23,53 @@ INPUT_FILE = 'autos.csv'
 OUTPUT_GOOD = 'autos-valid.csv'
 OUTPUT_BAD = 'FIXME-autos.csv'
 
+def production_year_check(year_string):
+    year = year_string[:4]
+
+    if year_string == 'NULL':
+        test_results = False
+        corrected_year = None
+    elif int(year) >= 1886 and int(year) <=2014:
+        test_results = True
+        corrected_year = int(year)
+    else:
+        test_results = False
+        corrected_year = None
+
+    results = [test_results, corrected_year]
+    return results
+
 def process_file(input_file, output_good, output_bad):
 
     with open(input_file, "r") as f:
         reader = csv.DictReader(f)
         header = reader.fieldnames
-
         #COMPLETE THIS FUNCTION
-
-
+        good_data = []
+        bad_data = []
+        for line in reader:
+            if line['URI'].startswith("http://dbpedia.org") == False:
+                continue
+            else:
+                test = production_year_check(line['productionStartYear'])
+                if test[0] == True:
+                    line['productionStartYear'] = test[1]
+                    good_data.append(line)
+                else:
+                    bad_data.append(line)
 
     # This is just an example on how you can use csv.DictWriter
     # Remember that you have to output 2 files
     with open(output_good, "w") as g:
         writer = csv.DictWriter(g, delimiter=",", fieldnames= header)
         writer.writeheader()
-        for row in YOURDATA:
+        for row in good_data:
+            writer.writerow(row)
+
+    with open(output_bad, "w") as b:
+        writer = csv.DictWriter(b, delimiter=",", fieldnames= header)
+        writer.writeheader()
+        for row in bad_data:
             writer.writerow(row)
 
 

@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 # Please note that the function 'make_request' is provided for your reference only.
 # You will not be able to to actually use it from within the Udacity web UI
+# Your task is to process the HTML using BeautifulSoup, extract the hidden
+# form field values for "__EVENTVALIDATION" and "__VIEWSTATE" and set the approprate
+# values in the data dictionary.
 # All your changes should be in the 'extract_data' function
 
 from bs4 import BeautifulSoup
@@ -16,9 +19,31 @@ def extract_data(page):
             "viewstate": ""}
     with open(page, "r") as html:
         # do something here to find the necessary values
+        soup = BeautifulSoup(html)
+        eventvalidation = soup.find (id = "__EVENTVALIDATION")
+        data["eventvalidation"] = eventvalidation["value"]
+        viewstate = soup.find (id = "__VIEWSTATE")
+        data["viewstate"] = viewstate["value"]
         pass
 
     return data
+
+'''
+Official Solution:
+
+def extract_data(page):
+    data = {"eventvalidation": "",
+            "viewstate": ""}
+    with open(page, "r") as html:
+        soup = BeautifulSoup(html)
+        ev = soup.find(id="__EVENTVALIDATION")
+        data["eventvalidation"] = ev["value"]
+
+        vs = soup.find(id="__VIEWSTATE")
+        data["viewstate"] = vs["value"]
+
+    return data
+'''
 
 
 def make_request(data):

@@ -38,7 +38,7 @@ def pretty_print(data, indent=4):
 
 
 def main():
-    results = query_by_name(ARTIST_URL, query_type["simple"], "Nirvana")
+    results = query_by_name(ARTIST_URL, query_type["simple"], "One Direction")
     pretty_print(results)
 
     artist_id = results["artists"][1]["id"]

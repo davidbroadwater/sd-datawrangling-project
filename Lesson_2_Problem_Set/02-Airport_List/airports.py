@@ -12,6 +12,12 @@ def extract_airports(page):
     with open(page, "r") as html:
         # do something here to find the necessary values
         soup = BeautifulSoup(html)
+        airport_list = soup.find(id = "AirportList")
+        for option in airport_list.find_all('option'):
+          if option['value'] == 'AllMajors' or option['value'] == 'AllOthers' or option['value'] == 'All':
+            continue
+          else:
+            data.append(option['value'])
 
     return data
 

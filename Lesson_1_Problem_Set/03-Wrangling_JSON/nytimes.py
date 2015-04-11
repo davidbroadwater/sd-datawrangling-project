@@ -39,8 +39,38 @@ def article_overview(kind, period):
     titles = []
     urls =[]
     # YOUR CODE HERE
-
+    for row in data:
+        section_title = row["section"]
+        title = row["title"]
+        row_dict = {section_title : title}
+        titles.append(row_dict)
+        for item in row["media"]:
+            for entry in item["media-metadata"]:
+                if entry["format"] == "Standard Thumbnail":
+                    urls.append(entry["url"])
+                else:
+                    continue
     return (titles, urls)
+
+'''
+Official Answer:
+
+def article_overview(kind, period):
+    data = get_from_file(kind, period)
+    titles = []
+    urls =[]
+
+    for article in data:
+        section = article["section"]
+        title = article["title"]
+        titles.append({section: title})
+        if "media" in article:
+            for m in article["media"]:
+                for mm in m["media-metadata"]:
+                    if mm["format"] == "Standard Thumbnail":
+                        urls.append(mm["url"])
+    return (titles, urls)
+'''
 
 
 def query_site(url, target, offset):

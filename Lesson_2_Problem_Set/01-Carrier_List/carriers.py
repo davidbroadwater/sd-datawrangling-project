@@ -19,6 +19,12 @@ def extract_carriers(page):
     with open(page, "r") as html:
         # do something here to find the necessary values
         soup = BeautifulSoup(html)
+        carrier_list = soup.find(id = "CarrierList")
+        for option in carrier_list.find_all('option'):
+          if option['value'] == 'AllUS' or option['value'] == 'AllForeign' or option['value'] == 'All':
+            continue
+          else:
+            data.append(option['value'])
 
     return data
 

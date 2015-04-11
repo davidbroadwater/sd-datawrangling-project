@@ -26,11 +26,43 @@ def get_authors(root):
         }
 
         # YOUR CODE HERE
+        data["fnm"] = author.find('fnm').text
+        data["snm"] = author.find('snm').text
+        data["email"] = author.find('email').text
+        insr_list = []
+        
+        for item in author.findall('./insr'):
+            insr = item.get('iid')
+            insr_list.append(insr)
+            
+        data["insr"] = insr_list
 
         authors.append(data)
 
     return authors
 
+    '''
+    Official Answer:
+
+    def get_authors(root):
+    authors = []
+    for author in root.findall('./fm/bibl/aug/au'):
+        data = {
+                "fnm": None,
+                "snm": None,
+                "email": None,
+                "insr": []
+        }
+        data["fnm"] = author.find('./fnm').text
+        data["snm"] = author.find('./snm').text
+        data["email"] = author.find('./email').text
+        insr = author.findall('./insr')
+        for i in insr:
+            data["insr"].append(i.attrib["iid"])
+        authors.append(data)
+
+    return authors
+'''
 
 def test():
     solution = [{'insr': ['I1'], 'fnm': 'Omer', 'snm': 'Mei-Dan', 'email': 'omer@extremegate.com'},

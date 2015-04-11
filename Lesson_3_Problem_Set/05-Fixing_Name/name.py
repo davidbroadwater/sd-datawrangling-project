@@ -19,10 +19,25 @@ import pprint
 CITIES = 'cities.csv'
 
 
+def parse_name_list(namelist):
+
+    reader = csv.reader([namelist], delimiter='|')
+    values = []
+    for item in reader:
+        for s in item:
+            values.append(s.strip('{}'))
+    return values
+
+
 def fix_name(name):
 
     # YOUR CODE HERE
-
+    if (name == "NULL") or (name == ""):
+        name = []
+    elif name.startswith("{"):
+        name = parse_name_list(name)
+    else:
+        name = [name]
     return name
 
 

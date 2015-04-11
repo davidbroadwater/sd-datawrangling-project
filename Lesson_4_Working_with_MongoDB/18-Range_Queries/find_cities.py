@@ -19,7 +19,7 @@ def get_db():
 
 def range_query():
     # You can use datetime(year, month, day) to specify date in the query
-    query = {}
+    query = {'foundingDate': {"$gte": datetime(2001,01,01), "$lte": datetime(2100,12,31) }}
     return query
 
 

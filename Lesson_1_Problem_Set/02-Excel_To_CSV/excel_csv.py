@@ -23,12 +23,71 @@ def parse_file(datafile):
     # YOUR CODE HERE
     # Remember that you can use xlrd.xldate_as_tuple(sometime, 0) to convert
     # Excel date to Python tuple of (year, month, day, hour, minute, second)
+
+    exceltime = sheet.col_values(0, 1)
+    data = {}
+    header = ['Year', 'Month', 'Day', 'Hour', 'Max Load']
+
+    for col in range(1,(sheet.ncols-1)):
+
+        region_name = sheet.cell_value(0, col)
+        region_data = sheet.col_values(col,1)
+        region_max = max(region_data)
+        max_index = region_data.index(region_max)
+        time_max = xlrd.xldate_as_tuple(exceltime[max_index], 0)
+        year = time_max[0]
+        month = time_max[1]
+        day = time_max [2]
+        hour = time_max[3]
+        data_line = [year, month, day, hour, region_max]
+        data_dict = dict(zip(header, data_line))
+        data[region_name] = data_dict
+
     return data
 
 def save_file(data, filename):
-    # YOUR CODE HERE
 
-    
+    with open(filename, 'w') as csvfile:
+        fieldnames = ['Station', 'Year', 'Month', 'Day', 'Hour', 'Max Load']
+        writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
+
+        writer.writeheader()
+        for row in data:
+            row_data = data[row]
+            row_data['Station'] = row
+            writer.writerow(row_data)
+
+'''
+Official Answer:
+
+def parse_file(datafile):
+    workbook = xlrd.open_workbook(datafile)
+    sheet = workbook.sheet_by_index(0)
+    data = {}
+    # process all rows that contain station data
+    for n in range (1, 9):
+        station = sheet.cell_value(0, n)
+        cv = sheet.col_values(n, start_rowx=1, end_rowx=None)
+
+        maxval = max(cv)
+        maxpos = cv.index(maxval) + 1
+        maxtime = sheet.cell_value(maxpos, 0)
+        realtime = xlrd.xldate_as_tuple(maxtime, 0)
+        data[station] = {"maxval": maxval,
+                         "maxtime": realtime}
+
+    print data
+    return data
+
+def save_file(data, filename):
+    with open(filename, "w") as f:
+        w = csv.writer(f, delimiter='|')
+        w.writerow(["Station", "Year", "Month", "Day", "Hour", "Max Load"])
+        for s in data:
+            year, month, day, hour, _ , _= data[s]["maxtime"]
+            w.writerow([s, year, month, day, hour, data[s]["maxval"]])
+'''
+
 def test():
     open_zip(datafile)
     data = parse_file(datafile)

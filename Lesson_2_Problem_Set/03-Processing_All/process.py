@@ -46,6 +46,23 @@ def process_file(f):
     with open("{}/{}".format(datadir, f), "r") as html:
 
         soup = BeautifulSoup(html)
+        data_list = soup.find_all("tr", "dataTDRight")
+        for item in data_list:
+            item_data = []
+            item_info = item.find_all("td")
+            #if item.find("TOTAL") == None:
+            for s in item_info:
+                item_data.append(s.string)
+            if 'TOTAL' not in item_data:
+                info["year"] = int(item_data[0])
+                info["month"] = int(item_data[1])
+                flights = {}
+                flights["domestic"] = int(item_data[2].replace(',', ''))
+                flights["international"] = int(item_data[3].replace(',', ''))
+                info["flights"] = flights
+                data.append(info)
+            else:
+                continue
 
     return data
 

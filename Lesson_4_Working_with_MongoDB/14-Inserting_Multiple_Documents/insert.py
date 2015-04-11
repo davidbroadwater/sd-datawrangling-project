@@ -7,7 +7,8 @@ def insert_autos(infile, db):
     # Your code here. Insert the data in one command
     # autos will be a list of dictionaries, as in the example in the previous video
     # You have to insert data in a collection 'autos'
-
+    for item in autos:
+    	db.autos.insert(item)
 
   
 if __name__ == "__main__":

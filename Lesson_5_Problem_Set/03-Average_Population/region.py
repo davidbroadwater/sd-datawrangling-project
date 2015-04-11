@@ -32,8 +32,15 @@ def get_db(db_name):
 
 def make_pipeline():
     # complete the aggregation pipeline
-    pipeline = [ ]
+    pipeline = [{ "$match": { "name" : { "$exists" : "True" }  } },
+                { "$unwind" : "$isPartOf"},
+                { "$group" : { "_id" : {"country" : "$country", "isPartOf" : "$isPartOf"},
+                             "Country_Regional_City_Population_Average" : { "$avg" : "$population"} } },
+                { "$group" : { "_id" : "$_id.country",
+                            "avgRegionalPopulation" : { "$avg" : "$Country_Regional_City_Population_Average"} } },
+                { "$sort" : { "country" : -1 } } ]
     return pipeline
+
 
 def aggregate(db, pipeline):
     result = db.cities.aggregate(pipeline)
@@ -48,6 +55,11 @@ if __name__ == '__main__':
         pprint.pprint(result["result"])
     else:
         pprint.pprint(result["result"][:100])
-    assert result["result"][0]["_id"] == 'Kuwait'
-    assert result["result"][1]["avgRegionalPopulation"] == 363945.0
-    assert result["result"][0] == {'_id': 'Kuwait', 'avgRegionalPopulation': 115945.66666666667}
+    for country in result["result"]:
+        if country["_id"] == 'Algeria':
+            assert country["_id"] == 'Algeria'
+            assert country["avgRegionalPopulation"] == 187590.19047619047
+    assert {'_id': 'Algeria', 
+             'avgRegionalPopulation': 187590.19047619047} in result["result"]
+
+

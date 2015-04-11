@@ -1,0 +1,5 @@
+What Area Of The World You Used For Your Project? Post A Link To The Map Position And Write A Short Description. Note That The Osm File Of The Map Should Be At Least 50mb.
+
+- URL: http://osm.org/go/TPTKToK
+- Export bounding box: `32.6739 : 32.7738, -117.2030 : -117.0678`
+- This area includes downtown San Diego, as well as portions of Coronado and National City. I chose this particular area because it is near where I currently live and where I hope to be moving within the next year. 
